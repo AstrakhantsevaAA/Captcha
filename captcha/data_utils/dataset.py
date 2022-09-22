@@ -1,6 +1,6 @@
-from typing import Optional
 import string
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -38,11 +38,11 @@ class CaptchaDataset(Dataset):
     """
 
     def __init__(
-            self,
-            data_dir: Path,
-            x_df: pd.DataFrame,
-            y_df: Optional[pd.DataFrame] = None,
-            augmentations_intensity: float = 0.0,
+        self,
+        data_dir: Path,
+        x_df: pd.DataFrame,
+        y_df: Optional[pd.DataFrame] = None,
+        augmentations_intensity: float = 0.0,
     ):
         self.data_dir = data_dir
         self.data = x_df
@@ -84,9 +84,7 @@ class CaptchaDataset(Dataset):
             self.augmentation = None
 
     def __getitem__(self, index):
-        image = Image.open(self.data.iloc[index]).convert(
-            "RGB"
-        )
+        image = Image.open(self.data.iloc[index]).convert("RGB")
         if self.augmentation is not None:
             image = self.augmentation(image=np.array(image))["image"]
             image = self.transform(Image.fromarray(image))
@@ -100,7 +98,7 @@ class CaptchaDataset(Dataset):
             label = self.labels.iloc[index]
             label = torch.tensor([one_hot(l) for l in label], dtype=torch.float)
             sample = {"image_id": image_id, "image": image, "label": label}
-            
+
         return sample
 
     def __len__(self):
