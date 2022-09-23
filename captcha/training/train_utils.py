@@ -1,8 +1,12 @@
+import os
+import random
 from collections import defaultdict
 from enum import Enum
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
+import torch
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 
@@ -14,6 +18,15 @@ class Phase(Enum):
     train = "train"
     val = "val"
     test = "test"
+
+
+def fix_seeds(random_state: int = 42):
+    random.seed(random_state)
+    os.environ["PYTHONHASHSEED"] = str(random_state)
+    torch.manual_seed(random_state)
+    np.random.seed(random_state)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 def create_dataloader(

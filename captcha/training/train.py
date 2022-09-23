@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from captcha.config import net_config, torch_config
 from captcha.nets.define_net import define_net
-from captcha.training.train_utils import Phase, create_dataloader
+from captcha.training.train_utils import Phase, create_dataloader, fix_seeds
 
 
 def train_one_epoch(
@@ -55,6 +55,7 @@ def train_model(cfg: DictConfig):
         else None
     )
     logger = None if task is None else task.get_logger()
+    fix_seeds()
 
     dataloader = create_dataloader(cfg.train.augmentations_intensity)
 

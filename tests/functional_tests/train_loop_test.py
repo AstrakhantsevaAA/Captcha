@@ -4,14 +4,13 @@ from torch import nn
 from captcha.config import net_config
 from captcha.nets.define_net import define_net
 from captcha.training.train import train_one_epoch
-from captcha.training.train_utils import Phase, create_dataloader
+from captcha.training.train_utils import Phase, create_dataloader, fix_seeds
 
 
 def test_loss_decreasing():
+    fix_seeds()
     dataloader = create_dataloader(test_size=10, batch_size=2)
-
     model = define_net(outputs=net_config.LEN_TOTAL, pretrained=True)
-
     criterion = nn.MultiLabelSoftMarginLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
