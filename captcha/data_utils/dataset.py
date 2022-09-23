@@ -41,10 +41,11 @@ class CaptchaDataset(Dataset):
         x_df: pd.DataFrame,
         y_df: Optional[pd.DataFrame] = None,
         augmentations_intensity: float = 0.0,
+        test_size: int = 0,
     ):
         self.data_dir = data_dir
-        self.data = x_df
-        self.labels = y_df
+        self.data = x_df if test_size <= 0 else x_df.iloc[:test_size]
+        self.labels = y_df if test_size <= 0 else y_df.iloc[:test_size]
         self.transform = transforms.Compose(
             [
                 transforms.Resize((224, 224)),
