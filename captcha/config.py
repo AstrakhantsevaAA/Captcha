@@ -22,7 +22,8 @@ class TorchConfig:
 class NetConfig:
     symbols = string.ascii_letters + string.digits
     LEN_CAPTCHA = 5
-    LEN_TOTAL = len(symbols) * LEN_CAPTCHA
+    LEN_SYMBOLS = len(symbols)
+    LEN_TOTAL = LEN_SYMBOLS * LEN_CAPTCHA
 
 
 system_config = SystemConfig()
