@@ -87,17 +87,16 @@ class CaptchaDataset(Dataset):
             image = self.transform(Image.fromarray(image))
         else:
             image = self.transform(image)
-        image_id = self.data.index[index]
 
         if self.labels is None:
-            sample = {"image_id": image_id, "image": image}
+            sample = {"image": image}
         else:
             oh_label = []
             label = self.labels.iloc[index]
             for l in label:
                 oh_label += one_hot(l)
             label = torch.tensor(oh_label, dtype=torch.float)
-            sample = {"image_id": image_id, "image": image, "label": label}
+            sample = {"image": image, "label": label}
 
         return sample
 
