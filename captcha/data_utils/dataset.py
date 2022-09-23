@@ -1,4 +1,3 @@
-import string
 from pathlib import Path
 from typing import Optional
 
@@ -21,15 +20,14 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 
-symbols = string.ascii_letters + string.digits
-LEN_CAPTCHA = 5
+from captcha.config import net_config
 
 
 def one_hot(letter: str) -> list:
-    oh_label = np.zeros(len(symbols))
-    idx = symbols.find(letter)
+    oh_label = np.zeros(len(net_config.symbols))
+    idx = net_config.symbols.find(letter)
     oh_label[idx] = 1
-    return oh_label.tolist()
+    return list(oh_label)
 
 
 class CaptchaDataset(Dataset):
@@ -47,8 +45,6 @@ class CaptchaDataset(Dataset):
         self.data_dir = data_dir
         self.data = x_df
         self.labels = y_df
-        self.symbols = symbols
-        self.len_captcha = LEN_CAPTCHA
         self.transform = transforms.Compose(
             [
                 transforms.Resize((224, 224)),
