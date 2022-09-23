@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import hydra
 import torch
@@ -20,11 +20,11 @@ def train_one_epoch(
     optimizer: Any,
     criterion: Any,
     epoch: int,
-    logger: Logger,
+    logger: Optional[Logger],
 ):
     running_loss = 0
     iters = len(dataloader)
-    print(f"Starting epoch {epoch}")
+    print(f"Starting training epoch {epoch}")
     for batch_n, batch in tqdm(enumerate(dataloader), total=iters):
         optimizer.zero_grad()
         outputs = model(batch["image"].to(torch_config.device))
@@ -32,13 +32,19 @@ def train_one_epoch(
         running_loss += loss.item()
         loss.backward()
         optimizer.step()
-        logger.report_scalar(
-            f"Running_loss",
-            "train",
-            iteration=(epoch + 1) * batch_n,
-            value=running_loss / (batch_n + 1),
-        )
-    logger.report_scalar(f"Loss", "train", iteration=epoch, value=running_loss / iters)
+
+        if logger is not None:
+            logger.report_scalar(
+                f"Running_loss",
+                "train",
+                iteration=(epoch + 1) * batch_n,
+                value=running_loss / (batch_n + 1),
+            )
+    loss = running_loss / iters
+    if logger is not None:
+        logger.report_scalar(f"Loss", "train", iteration=epoch, value=loss)
+
+    return loss
 
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
@@ -60,9 +66,10 @@ def train_model(cfg: DictConfig):
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
     for epoch in range(cfg.train.epochs):
-        train_one_epoch(
+        _ = train_one_epoch(
             model, dataloader[Phase.train], optimizer, criterion, epoch, logger
         )
+
     torch.save(model, "model.pth")
 
     if logger is not None:

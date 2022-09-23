@@ -16,7 +16,9 @@ class Phase(Enum):
     test = "test"
 
 
-def create_dataloader(augmentations_intensity: float = 0, batch_size: int = 32):
+def create_dataloader(
+    augmentations_intensity: float = 0, batch_size: int = 32, test_size: int = 0
+):
     data_path = Path(
         "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/source6"
     )
@@ -37,7 +39,11 @@ def create_dataloader(augmentations_intensity: float = 0, batch_size: int = 32):
             x_train, y_train = x_eval, y_eval
 
         dataset = CaptchaDataset(
-            system_config.data_dir, x_train, y_train, augmentations_intensity
+            system_config.data_dir,
+            x_train,
+            y_train,
+            augmentations_intensity,
+            test_size=test_size,
         )
         dataloader[phase] = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
