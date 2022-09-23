@@ -1,0 +1,7 @@
+train:
+  log_clearml: True
+  epochs: 50
+  task_name: baseline
+  augmentations_intensity: 0
+net:
+  freeze_grads: False
