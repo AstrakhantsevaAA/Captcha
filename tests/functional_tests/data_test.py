@@ -7,7 +7,7 @@ from captcha.data_utils.dataset import CaptchaDataset
 from captcha.training.train_utils import Phase, create_dataloader
 
 
-def test_one_sample():
+def test_datasetclass():
     data_path = Path(
         "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/source6"
     )
