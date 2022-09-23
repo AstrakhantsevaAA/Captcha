@@ -57,7 +57,9 @@ def train_model(cfg: DictConfig):
     logger = None if task is None else task.get_logger()
     fix_seeds()
 
-    dataloader = create_dataloader(cfg.train.augmentations_intensity, cfg.train.batch_size, cfg.train.test_size)
+    dataloader = create_dataloader(
+        cfg.train.augmentations_intensity, cfg.train.batch_size, cfg.train.test_size
+    )
 
     model = define_net(
         cfg.net.freeze_grads, outputs=net_config.LEN_TOTAL, pretrained=True
@@ -65,7 +67,7 @@ def train_model(cfg: DictConfig):
 
     criterion = nn.MultiLabelSoftMarginLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    loss = 0.
+    loss = 0.0
 
     for epoch in range(cfg.train.epochs):
         loss = train_one_epoch(
