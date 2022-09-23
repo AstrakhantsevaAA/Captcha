@@ -57,7 +57,7 @@ def train_model(cfg: DictConfig):
     logger = None if task is None else task.get_logger()
     fix_seeds()
 
-    dataloader = create_dataloader(cfg.train.augmentations_intensity)
+    dataloader = create_dataloader(cfg.train.augmentations_intensity, cfg.train.batch_size, cfg.train.test_size)
 
     model = define_net(
         cfg.net.freeze_grads, outputs=net_config.LEN_TOTAL, pretrained=True
@@ -65,16 +65,20 @@ def train_model(cfg: DictConfig):
 
     criterion = nn.MultiLabelSoftMarginLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    loss = 0.
 
     for epoch in range(cfg.train.epochs):
-        _ = train_one_epoch(
+        loss = train_one_epoch(
             model, dataloader[Phase.train], optimizer, criterion, epoch, logger
         )
 
-    torch.save(model, "model.pth")
+    if cfg.train.model_save_path:
+        torch.save(model, f"{cfg.train.model_save_path}/model.pth")
 
     if logger is not None:
         logger.flush()
+
+    return loss
 
 
 if __name__ == "__main__":
