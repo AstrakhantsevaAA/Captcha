@@ -25,11 +25,11 @@ symbols = string.ascii_letters + string.digits
 LEN_CAPTCHA = 5
 
 
-def one_hot(letter: str) -> np.ndarray:
+def one_hot(letter: str) -> list:
     oh_label = np.zeros(len(symbols))
     idx = symbols.find(letter)
     oh_label[idx] = 1
-    return oh_label
+    return oh_label.tolist()
 
 
 class CaptchaDataset(Dataset):
@@ -95,8 +95,11 @@ class CaptchaDataset(Dataset):
         if self.labels is None:
             sample = {"image_id": image_id, "image": image}
         else:
+            oh_label = []
             label = self.labels.iloc[index]
-            label = torch.tensor([one_hot(l) for l in label], dtype=torch.float)
+            for l in label:
+                oh_label += one_hot(l)
+            label = torch.tensor(oh_label, dtype=torch.float)
             sample = {"image_id": image_id, "image": image, "label": label}
 
         return sample

@@ -26,5 +26,4 @@ def test_one_sample():
 
     assert len(sample["image"].shape) == 3
     assert sample["image"].shape[0] == 3
-    assert sample["label"].shape[0] == LEN_CAPTCHA
-    assert sample["label"].shape[1] == len(symbols)
+    assert sample["label"].shape[0] == LEN_CAPTCHA * len(symbols)
