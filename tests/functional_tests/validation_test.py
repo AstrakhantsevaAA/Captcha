@@ -15,4 +15,5 @@ def test_validation():
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
     _ = train_one_epoch(model, dataloader[Phase.train], optimizer, criterion, 1, None)
-    evaluation(model, dataloader[Phase.val], criterion, epoch=1)
+    preds = evaluation(model, dataloader[Phase.val], criterion, epoch=1)
+    print(preds)
