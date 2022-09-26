@@ -12,6 +12,8 @@ class APIResponse(BaseModel):
     endpoint_name: str = "classification"
     predictions: Optional[List[List[float]]]
     labels: Optional[List[List[float]]]
+    decode_prediction: Optional[List[List[str]]]
+    decode_labels: Optional[List[List[str]]]
     other: Optional[str]
     message: str = "Successful"
 

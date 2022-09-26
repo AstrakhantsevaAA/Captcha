@@ -100,12 +100,15 @@ def inference(data: list):
     loader = create_dataloader(batch_size=len(data), inference=True, files=data)
     preds = evaluation(model, loader, inference=True)
 
-    predictions = preds.iloc[:, : net_config.LEN_CAPTCHA]
-    labels = preds.iloc[:, net_config.LEN_CAPTCHA :]
-
+    predictions = preds.iloc[:, : net_config.LEN_CAPTCHA].values.tolist()
+    labels = preds.iloc[:, net_config.LEN_CAPTCHA :].values.tolist()
+    decode_prediction = [[net_config.symbols[int(idx)] for idx in p] for p in predictions]
+    decode_labels = [[net_config.symbols[int(idx)] for idx in l] for l in labels]
     external_data = {
         "id": 0,
-        "predictions": predictions.values.tolist(),
-        "labels": labels.values.tolist(),
+        "predictions": predictions,
+        "labels": labels,
+        "decode_prediction": decode_prediction,
+        "decode_labels": decode_labels,
     }
     return external_data
