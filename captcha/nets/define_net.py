@@ -15,6 +15,7 @@ def define_net(
 ):
     pretrained_weights = models.ResNet18_Weights.DEFAULT if pretrained else None
     model = models.resnet18(weights=pretrained_weights)
+    model.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
 
     if freeze_grads:
         for params in model.parameters():
