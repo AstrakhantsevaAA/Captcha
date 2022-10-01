@@ -1,13 +1,9 @@
-from pathlib import Path
+import pandas as pd
 
 from captcha.api.helpers import inference
 
 
-def test_inference():
-    files = [
-        Path(
-            "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/source6/Large_Captcha_Dataset/0a954.png"
-        )
-    ]
+def test_inference(files):
     response = inference(files)
     print(response)
+    pd.DataFrame(response).to_csv("outputs/test_output.csv")

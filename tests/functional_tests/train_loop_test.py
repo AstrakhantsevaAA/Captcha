@@ -5,34 +5,36 @@ from torch import nn
 from captcha.config import net_config
 from captcha.nets.define_net import define_net
 from captcha.training.train import train_model, train_one_epoch
-from captcha.training.train_utils import Phase, create_dataloader, fix_seeds
+from captcha.training.train_utils import Phase
 
 
-def test_loss_decreasing():
-    fix_seeds()
-    dataloader = create_dataloader(test_size=10, batch_size=2)
+def test_loss_decreasing(test_dataloader):
     model = define_net(outputs=net_config.LEN_TOTAL, pretrained=True)
     criterion = nn.MultiLabelSoftMarginLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 
     loss1 = train_one_epoch(
-        model, dataloader[Phase.train], optimizer, criterion, 1, None
+        model, test_dataloader[Phase.train], optimizer, criterion, 1, None
     )
 
     loss2 = train_one_epoch(
-        model, dataloader[Phase.train], optimizer, criterion, 2, None
+        model, test_dataloader[Phase.train], optimizer, criterion, 2, None
     )
 
     assert loss1 > loss2
 
 
-def test_deterministic():
+def test_deterministic(data_dir, test_csv):
     conf = OmegaConf.create(
         {
             "train": {
+                "data_dir": data_dir,
                 "log_clearml": False,
                 "epochs": 3,
-                "task_name": "baseline",
+                "task_name": "test",
+                "train_path": test_csv,
+                "eval_path": test_csv,
+                "test_path": test_csv,
                 "augmentations_intensity": 0,
                 "model_save_path": "",
                 "test_size": 10,
