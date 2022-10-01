@@ -1,9 +1,11 @@
 train:
   log_clearml: True
-  epochs: 20
-  task_name: baseline
-  augmentations_intensity: 0
-  model_save_path: "baseline"
+  epochs: 100
+  task_name: synthetic_more_aug
+  train_path: processed/synthetic/train_set.csv
+  eval_path: processed/synthetic/eval_set.csv
+  augmentations_intensity: 0.8
+  model_save_path: synthetic_more_aug
   test_size: 0
   batch_size: 32
 net:
