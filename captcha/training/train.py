@@ -59,11 +59,11 @@ def train_model(cfg: DictConfig):
     fix_seeds()
 
     dataloader = create_dataloader(
-        cfg.train.train_path,
-        cfg.train.eval_path,
-        cfg.train.augmentations_intensity,
-        cfg.train.batch_size,
-        cfg.train.test_size,
+        data_dir=cfg.train.data_dir,
+        csv_path=[cfg.train.train_path, cfg.train.eval_path, cfg.train.test_path],
+        augmentations_intensity=cfg.train.augmentations_intensity,
+        batch_size=cfg.train.batch_size,
+        test_size=cfg.train.test_size,
     )
 
     model = define_net(
@@ -88,14 +88,15 @@ def train_model(cfg: DictConfig):
             logger,
             phase=Phase.val.value,
         )
-        _ = evaluation(
-            model,
-            dataloader[Phase.test],
-            criterion,
-            epoch,
-            logger,
-            phase=Phase.test.value,
-        )
+        if dataloader.get(Phase.test) is not None:
+            _ = evaluation(
+                model,
+                dataloader[Phase.test],
+                criterion,
+                epoch,
+                logger,
+                phase=Phase.test.value,
+            )
         if cfg.train.model_save_path:
             model_save_path = system_config.model_dir / cfg.train.model_save_path
             model_save_path.mkdir(exist_ok=True, parents=True)
