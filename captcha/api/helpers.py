@@ -21,13 +21,18 @@ def evaluation(
     epoch: int = -1,
     logger: Optional[Logger] = None,
     inference: bool = False,
+    phase: str = "val",
 ) -> pd.DataFrame:
+
     preds_collector = []
     model.eval()
     running_loss = 0.0
     iters = len(eval_dataloader)
 
-    print(f"Starting validation epoch {epoch}")
+    if inference:
+        print("Gathering predictions...")
+    else:
+        print(f"Starting {phase} epoch {epoch}")
     with torch.no_grad():
         for batch in tqdm(eval_dataloader, total=len(eval_dataloader)):
             logits = model.forward(batch["image"].to(torch_config.device))
@@ -82,12 +87,12 @@ def evaluation(
         if logger is not None:
             logger.report_scalar(
                 f"Accuracy",
-                "eval",
+                phase,
                 iteration=epoch,
                 value=accuracy / net_config.LEN_CAPTCHA,
             )
             logger.report_scalar(
-                f"Loss", "eval", iteration=epoch, value=running_loss / iters
+                f"Loss", phase, iteration=epoch, value=running_loss / iters
             )
 
     return eval_preds_df
@@ -97,15 +102,18 @@ def inference(data: list):
     model = define_net(
         weights=str(system_config.model_dir / net_config.model_path),
     )
-    loader = create_dataloader(batch_size=len(data), inference=True, files=data)
+    loader = create_dataloader(
+        batch_size=len(data), inference=True, files=data, augmentations_intensity=0.0
+    )
     preds = evaluation(model, loader, inference=True)
 
     predictions = preds.iloc[:, : net_config.LEN_CAPTCHA].values.tolist()
     labels = preds.iloc[:, net_config.LEN_CAPTCHA :].values.tolist()
-    decode_prediction = [[net_config.symbols[int(idx)] for idx in p] for p in predictions]
+    decode_prediction = [
+        [net_config.symbols[int(idx)] for idx in p] for p in predictions
+    ]
     decode_labels = [[net_config.symbols[int(idx)] for idx in l] for l in labels]
     external_data = {
-        "id": 0,
         "predictions": predictions,
         "labels": labels,
         "decode_prediction": decode_prediction,
