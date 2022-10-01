@@ -17,14 +17,15 @@ class TorchConfig:
         device = torch.device("cpu")
     else:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(device)
 
 
 class NetConfig:
-    symbols = string.ascii_letters + string.digits
-    LEN_CAPTCHA = 5
+    symbols = string.digits
+    LEN_CAPTCHA = 6
     LEN_SYMBOLS = len(symbols)
     LEN_TOTAL = LEN_SYMBOLS * LEN_CAPTCHA
-    model_path = "baseline/model.pth"
+    model_path = "synthetic/model.pth"
 
 
 system_config = SystemConfig()
