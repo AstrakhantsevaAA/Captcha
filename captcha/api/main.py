@@ -8,7 +8,6 @@ from captcha.api.helpers import inference
 
 
 class APIResponse(BaseModel):
-    id: int
     endpoint_name: str = "classification"
     predictions: Optional[List[List[float]]]
     labels: Optional[List[List[float]]]
@@ -37,6 +36,6 @@ async def get_model(endpoint_name: EndpointName, data: Data):
     try:
         response = APIResponse(**external_data)
     except ValidationError as e:
-        response = APIResponse(id=0, message=str(e))
+        response = APIResponse(message=str(e))
 
     return response
