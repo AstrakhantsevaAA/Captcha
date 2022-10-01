@@ -3,7 +3,7 @@ import random
 from collections import defaultdict
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -30,8 +30,8 @@ def fix_seeds(random_state: int = 42):
 
 
 def create_dataloader(
-    train_path: Optional[str] = None,
-    eval_path: Optional[str] = None,
+    data_dir: Path = system_config.data_dir,
+    csv_path: Optional[Union[Path, str, list, dict]] = None,
     augmentations_intensity: float = 0,
     batch_size: int = 32,
     test_size: int = 0,
@@ -45,41 +45,46 @@ def create_dataloader(
             raise Exception("files is None, for inference files are necessary")
         df = pd.DataFrame({"filepath": files})
         df["label"] = df["filepath"].apply(lambda x: Path(x).stem)
-        dataset = CaptchaDataset(system_config.data_dir, df)
+        dataset = CaptchaDataset(data_dir, df)
 
         return DataLoader(dataset, batch_size=batch_size)
 
-    if train_path is None or eval_path is None:
+    if csv_path is None or not csv_path:
         raise Exception(
             "csv files with train and eval data are None, for training those files are necessary"
         )
 
-    data = pd.read_csv(
-        system_config.data_dir / train_path, index_col=0, dtype={"label": str}
-    )
-    data_eval = pd.read_csv(
-        system_config.data_dir / eval_path, index_col=0, dtype={"label": str}
-    )
-    data_test = pd.read_csv(
-        system_config.data_dir / "processed/test_set.csv", dtype={"label": str}
-    )
+    data = defaultdict()
+    if isinstance(csv_path, str) or isinstance(csv_path, Path):
+        for phase in Phase:
+            data[phase] = pd.read_csv(data_dir / csv_path, dtype={"label": str})
+    elif isinstance(csv_path, list):
+        for path, phase in zip(csv_path, Phase):
+            data[phase] = pd.read_csv(data_dir / path, dtype={"label": str})
+    elif isinstance(csv_path, dict):
+        for phase in Phase:
+            if csv_path.get(phase.value) is not None:
+                data[phase] = pd.read_csv(
+                    data_dir / csv_path.get(phase.value), dtype={"label": str}
+                )
 
     shuffle = True
     for phase in Phase:
         if phase == Phase.val:
             augmentations_intensity, shuffle = 0.9, False
-            data = data_eval
 
         if phase == Phase.test:
             augmentations_intensity, shuffle = 0.0, False
-            data = data_test
 
-        dataset = CaptchaDataset(
-            system_config.data_dir,
-            data,
-            augmentations_intensity,
-            test_size=test_size,
-        )
-        dataloader[phase] = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
+        if data.get(phase) is not None:
+            dataset = CaptchaDataset(
+                data_dir,
+                data[phase],
+                augmentations_intensity,
+                test_size=test_size,
+            )
+            dataloader[phase] = DataLoader(
+                dataset, batch_size=batch_size, shuffle=shuffle
+            )
 
     return dataloader
