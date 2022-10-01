@@ -59,11 +59,17 @@ def train_model(cfg: DictConfig):
     fix_seeds()
 
     dataloader = create_dataloader(
-        cfg.train.augmentations_intensity, cfg.train.batch_size, cfg.train.test_size
+        cfg.train.train_path,
+        cfg.train.eval_path,
+        cfg.train.augmentations_intensity,
+        cfg.train.batch_size,
+        cfg.train.test_size,
     )
 
     model = define_net(
-        cfg.net.freeze_grads, outputs=net_config.LEN_TOTAL, pretrained=True
+        cfg.net.freeze_grads,
+        outputs=net_config.LEN_TOTAL,
+        pretrained=True,
     )
 
     criterion = nn.MultiLabelSoftMarginLoss()
@@ -74,7 +80,22 @@ def train_model(cfg: DictConfig):
         loss = train_one_epoch(
             model, dataloader[Phase.train], optimizer, criterion, epoch, logger
         )
-        _ = evaluation(model, dataloader[Phase.val], criterion, epoch, logger)
+        _ = evaluation(
+            model,
+            dataloader[Phase.val],
+            criterion,
+            epoch,
+            logger,
+            phase=Phase.val.value,
+        )
+        _ = evaluation(
+            model,
+            dataloader[Phase.test],
+            criterion,
+            epoch,
+            logger,
+            phase=Phase.test.value,
+        )
         if cfg.train.model_save_path:
             model_save_path = system_config.model_dir / cfg.train.model_save_path
             model_save_path.mkdir(exist_ok=True, parents=True)
