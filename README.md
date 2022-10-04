@@ -27,6 +27,10 @@ Run
 
 `python captcha/data_utils/generate_synthetic_data.py data/raw/synthetic_test 10`
 
+---------------------------
+## Model weights
+
+You can download last release using [this](https://drive.google.com/drive/folders/1ekGnbU0aOjz5Fd28HXq_2f51P3l3BIHY?usp=sharing) Google Drive link
 ___________________________
 
 ## API
