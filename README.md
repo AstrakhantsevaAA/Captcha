@@ -1,7 +1,7 @@
 # Captcha recognition
  _____________________________
 
-Last update 1.10.22
+Last update 4.10.22
 ______________________________
 
 ## Data 
@@ -36,45 +36,21 @@ Run uvicorn from captcha/api directory
 
 go to `http://127.0.0.1:8000/docs`
 
-send the request, for example, 
-```
-{
-  "image_paths": [
-    "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/test/427968.jpeg",
-    "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/test/660574.jpeg",
-    "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/test/819877.jpeg",
-    "/home/alenaastrakhantseva/PycharmProjects/Captcha/data/raw/test/857392.jpeg"
-  ]
-}
-```
-
-get the response as 
+upload image and get the response as 
 ```
 {
   "endpoint_name": "classification",
   "predictions": [
     [4, 7, 7, 9, 5, 8],
-    [6, 6, 0, 5, 2, 1],
-    [8, 1, 9, 8, 8, 7],
-    [8, 5, 7, 3, 3, 7],
   ],
   "labels": [
     [4, 2, 7, 9, 6, 8],
-    [6, 6, 0, 5, 7, 4],
-    [8, 1, 9, 8, 7, 7],
-    [8, 5, 7, 3, 9, 2],
   ],
   "decode_prediction": [
     ['4', '7', '7', '9', '5', '8'],
-    ['6', '6', '0', '5', '2', '1'],
-    ['8', '1', '9', '8', '8', '7'],
-    ['8', '5', '7', '3', '3', '7'],
   ],
   "decode_labels": [
     ['4', '2', '7', '9', '6', '8'],
-    ['6', '6', '0', '5', '7', '4'],
-    ['8', '1', '9', '8', '7', '7'],
-    ['8', '5', '7', '3', '9', '2'],
   ],
   "other": null,
   "message": "Successful"
