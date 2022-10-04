@@ -25,7 +25,7 @@ class NetConfig:
     LEN_CAPTCHA = 6
     LEN_SYMBOLS = len(symbols)
     LEN_TOTAL = LEN_SYMBOLS * LEN_CAPTCHA
-    model_path = "synthetic/model.pth"
+    model_path = "release_v0.1.0/model.pth"
 
 
 system_config = SystemConfig()

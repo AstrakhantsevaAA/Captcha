@@ -80,3 +80,15 @@ get the response as
   "message": "Successful"
 }
 ```
+
+----------------
+# Docker API
+Run
+
+`docker build -t captcha_breaker .`
+
+`docker run -d --name vsem_pizda -p 80:80 captcha_breaker`
+
+Go to http://127.0.0.1/docs
+
+Enjoy!
