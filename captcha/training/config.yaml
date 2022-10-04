@@ -1,13 +1,18 @@
 train:
   log_clearml: True
   epochs: 100
-  task_name: synthetic_more_aug
+  task_name: fixed_continue_adam
+  model_save_path: synthetic_continue_adam
+  optimizer_name: adam
+dataloader:
+  augmentations_intensity: 0.8
+  data_dir: /home/alenaastrakhantseva/PycharmProjects/Captcha/data
   train_path: processed/synthetic/train_set.csv
   eval_path: processed/synthetic/eval_set.csv
   test_path: processed/test_set.csv
-  augmentations_intensity: 0.8
-  model_save_path: synthetic_more_aug
   test_size: 0
   batch_size: 32
 net:
+  continue_weights: ""
   freeze_grads: False
+  pretrained: True

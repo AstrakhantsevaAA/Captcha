@@ -28,21 +28,22 @@ def test_deterministic(data_dir, test_csv):
     conf = OmegaConf.create(
         {
             "train": {
-                "data_dir": data_dir,
                 "log_clearml": False,
                 "epochs": 3,
                 "task_name": "test",
+                "model_save_path": "",
+                "optimizer_name": "adam",
+            },
+            "dataloader": {
+                "data_dir": data_dir,
                 "train_path": test_csv,
                 "eval_path": test_csv,
                 "test_path": test_csv,
                 "augmentations_intensity": 0,
-                "model_save_path": "",
                 "test_size": 10,
                 "batch_size": 2,
             },
-            "net": {
-                "freeze_grads": False,
-            },
+            "net": {"continue_weights": "", "freeze_grads": False, "pretrained": False},
         }
     )
     loss1 = train_model(conf)

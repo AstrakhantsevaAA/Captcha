@@ -8,6 +8,7 @@ from typing import Optional, Union
 import numpy as np
 import pandas as pd
 import torch
+import torch.optim as optim
 from torch.utils.data import DataLoader
 
 from captcha.config import system_config
@@ -71,7 +72,7 @@ def create_dataloader(
     shuffle = True
     for phase in Phase:
         if phase == Phase.val:
-            augmentations_intensity, shuffle = 0.9, False
+            augmentations_intensity, shuffle = augmentations_intensity, False
 
         if phase == Phase.test:
             augmentations_intensity, shuffle = 0.0, False
@@ -88,3 +89,16 @@ def create_dataloader(
             )
 
     return dataloader
+
+
+def define_optimizer(optimizer_name: str, model):
+    if optimizer_name == "sgd":
+        optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    elif optimizer_name == "adam":
+        optimizer = optim.Adam(model.parameters(), lr=0.003)
+    else:
+        raise Exception(
+            f"Wrong optimizer name! Expected 'sgd' or 'adam', got {optimizer_name}"
+        )
+
+    return optimizer

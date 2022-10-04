@@ -11,9 +11,9 @@ def define_net(
     freeze_grads: bool = False,
     outputs: int = 1,
     pretrained: bool = False,
-    weights: Optional = None,
+    weights: Optional[str] = None,
 ):
-    if weights is not None:
+    if (weights is not None) and weights:
         model = torch.load(weights, map_location="cpu")
     else:
         pretrained_weights = models.ResNet18_Weights.DEFAULT if pretrained else None
