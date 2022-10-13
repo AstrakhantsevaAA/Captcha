@@ -77,7 +77,8 @@ def train_model(cfg: DictConfig):
     )
 
     model = define_net(
-        cfg.net.freeze_grads,
+        model_name=cfg.net.model_name,
+        freeze_grads=cfg.net.freeze_grads,
         outputs=net_config.LEN_TOTAL,
         pretrained=cfg.net.pretrained,
         weights=cfg.net.continue_weights,

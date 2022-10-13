@@ -8,6 +8,7 @@ from captcha.config import torch_config
 
 
 def define_net(
+    model_name: str = "resnet18",
     freeze_grads: bool = False,
     outputs: int = 1,
     pretrained: bool = False,
@@ -16,8 +17,16 @@ def define_net(
     if (weights is not None) and weights:
         model = torch.load(weights, map_location="cpu")
     else:
-        pretrained_weights = models.ResNet18_Weights.DEFAULT if pretrained else None
-        model = models.resnet18(weights=pretrained_weights)
+        if model_name == "resnet18":
+            pretrained_weights = models.ResNet18_Weights.DEFAULT if pretrained else None
+            model = models.resnet18(weights=pretrained_weights)
+        elif model_name == "resnet50":
+            pretrained_weights = models.ResNet50_Weights.DEFAULT if pretrained else None
+            model = models.resnet50(weights=pretrained_weights)
+        else:
+            raise Exception(
+                f"Unsupported model_name, expected resnet18 or resnet50, got {model_name}"
+            )
         model.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
 
         if freeze_grads:
