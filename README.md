@@ -30,7 +30,7 @@ Run
 ---------------------------
 ## Model weights
 
-You can download last release using [this](https://drive.google.com/drive/folders/1ekGnbU0aOjz5Fd28HXq_2f51P3l3BIHY?usp=sharing) Google Drive link
+You can download last release using [this](https://drive.google.com/drive/folders/1WP0bo3NF172F908lmOYTjIz7mxRTIGuw?usp=sharing) Google Drive link
 ___________________________
 
 ## API

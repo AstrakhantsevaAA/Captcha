@@ -34,7 +34,7 @@ COPY requirements/ /requirements/
 RUN pip3 install --no-cache-dir -r requirements/server.txt \
     && pip3 install --no-cache-dir -r requirements/train.txt
 
-COPY models/release_v0.1.0 /models/release_v0.1.0
+COPY models/release_v0.2.0 /models/release_v0.2.0
 
 COPY captcha /captcha
 COPY setup.py /setup.py
