@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel, ValidationError
@@ -30,7 +30,7 @@ def health_check():
 
 
 @app.post("/predict")
-async def prediction(data: List[UploadFile] | UploadFile = File()):
+async def prediction(data: Union[List[UploadFile], UploadFile] = File()):
     data = check_data(data)
     external_data = inference(data)
     try:
@@ -41,7 +41,7 @@ async def prediction(data: List[UploadFile] | UploadFile = File()):
     return response
 
 
-def check_data(files: List[UploadFile] | UploadFile):
+def check_data(files: Union[List[UploadFile], UploadFile]):
     if not isinstance(files, list):
         files = [files]
     new_paths = []
