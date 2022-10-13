@@ -1,7 +1,7 @@
 # Captcha recognition
  _____________________________
 
-Last update 4.10.22
+Last update 13.10.22
 ______________________________
 
 ## Data 
@@ -38,12 +38,14 @@ Run uvicorn from captcha/api directory
 
 `uvicorn main:app --reload`
 
-go to `http://127.0.0.1:8000/docs`
+### Request
 
-upload image and get the response as 
+1. go to `http://127.0.0.1:8000/docs`
+
+upload image and get the response: 
 ```
 {
-  "endpoint_name": "classification",
+  "endpoint_name": "predict",
   "predictions": [
     [4, 7, 7, 9, 5, 8],
   ],
@@ -61,6 +63,23 @@ upload image and get the response as
 }
 ```
 
+or
+
+2. Send request using python
+
+```
+response = requests.post(
+        url="http://127.0.0.1:8000/predict",
+        files=[("data", open(file_path, "rb"))],
+    )
+```
+
+or
+
+3. Use curl
+
+`curl -X POST "http://127.0.0.1:8000/predict"  -F "data=@tests/test_data/000037.png"`
+
 ----------------
 # Docker API
 Run
@@ -69,6 +88,15 @@ Run
 
 `docker run -d --name vsem_pizda -p 80:80 captcha_breaker`
 
-Go to http://127.0.0.1/docs
 
-Enjoy!
+## TODO
+
+- scheduler Cosine Annealing
+- Resnet50 (Resnet-D, Resnest, Resnext)
+- Adam + warmup
+- Mixed Precision
+- dvc for splits
+- profile
+- Perform augs on the GPU (Kornia, DALI)
+- hyperparameter tuning
+- Rabbit
