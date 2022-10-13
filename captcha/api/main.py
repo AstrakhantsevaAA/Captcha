@@ -1,15 +1,14 @@
-from enum import Enum
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel, ValidationError
 
 from captcha.api.helpers import inference
 
 
 class APIResponse(BaseModel):
-    endpoint_name: str = "classification"
+    endpoint_name: str = "predict"
     predictions: Optional[List[List[float]]]
     labels: Optional[List[List[float]]]
     decode_prediction: Optional[List[List[str]]]
@@ -22,10 +21,6 @@ class Data(BaseModel):
     images: list[UploadFile]
 
 
-class EndpointName(str, Enum):
-    classification = "classification"
-
-
 app = FastAPI()
 
 
@@ -34,12 +29,10 @@ def health_check():
     return APIResponse(endpoint_name="health_check", message="OK")
 
 
-@app.post("/{endpoint_name}")
-async def get_model(endpoint_name: EndpointName, data: UploadFile):
-    data = check_data([data])
-    external_data = {}
-    if endpoint_name == EndpointName.classification:
-        external_data = inference(data)
+@app.post("/predict")
+async def get_model(data: List[UploadFile] = File()):
+    data = check_data(data)
+    external_data = inference(data)
     try:
         response = APIResponse(**external_data)
     except ValidationError as e:
