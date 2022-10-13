@@ -88,6 +88,7 @@ Run
 
 `docker run -d --name vsem_pizda -p 80:80 captcha_breaker`
 
+`curl -X POST "http://127.0.0.1:80/predict"  -F "data=@tests/test_data/000037.png"`
 
 ## TODO
 
