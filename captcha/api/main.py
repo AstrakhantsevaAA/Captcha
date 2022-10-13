@@ -30,7 +30,7 @@ def health_check():
 
 
 @app.post("/predict")
-async def get_model(data: List[UploadFile] = File()):
+async def prediction(data: List[UploadFile] | UploadFile = File()):
     data = check_data(data)
     external_data = inference(data)
     try:
@@ -41,7 +41,9 @@ async def get_model(data: List[UploadFile] = File()):
     return response
 
 
-def check_data(files):
+def check_data(files: List[UploadFile] | UploadFile):
+    if not isinstance(files, list):
+        files = [files]
     new_paths = []
     for file in files:
         try:
