@@ -34,7 +34,7 @@ You can download last release using [this](https://drive.google.com/drive/folder
 ___________________________
 
 ## API
-Run uvicorn from captcha/api directory
+Run uvicorn from **captcha/api** directory
 
 `uvicorn main:app --reload`
 
@@ -65,7 +65,7 @@ upload image and get the response:
 
 or
 
-2. Send request using python
+2. Send the request using python
 
 ```
 response = requests.post(
@@ -82,13 +82,20 @@ or
 
 ----------------
 # Docker API
-Run
+Run locally
 
 `docker build -t captcha_breaker .`
 
 `docker run -d --name vsem_pizda -p 80:80 captcha_breaker`
 
+Pull from dockerhub
+
+`docker pull astra92293/captcha_breaker:0.2.0`
+
+Send the request
+
 `curl -X POST "http://127.0.0.1:80/predict"  -F "data=@tests/test_data/000037.png"`
+
 
 ## TODO
 
