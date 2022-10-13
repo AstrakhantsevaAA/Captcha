@@ -4,6 +4,16 @@
 Last update 13.10.22
 ______________________________
 
+## About project
+This project was started to break a captcha on some website for a parser bot. 
+
+Solved the problem of image recognition for images with 6 numbers.
+
+The example of images:
+
+![alt text](docs/427968.jpeg)
+______________________________
+
 ## Data 
 ### From open sources
 - [source2](https://www.kaggle.com/datasets/fournierp/captcha-version-2-images)
