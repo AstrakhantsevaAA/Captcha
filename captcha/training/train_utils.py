@@ -96,6 +96,8 @@ def define_optimizer(optimizer_name: str, model):
         optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     elif optimizer_name == "adam":
         optimizer = optim.Adam(model.parameters(), lr=0.003)
+    elif optimizer_name == "radam":
+        optimizer = optim.RAdam(model.parameters(), lr=0.003)
     else:
         raise Exception(
             f"Wrong optimizer name! Expected 'sgd' or 'adam', got {optimizer_name}"
