@@ -27,7 +27,6 @@ def define_net(
             raise Exception(
                 f"Unsupported model_name, expected resnet18 or resnet50, got {model_name}"
             )
-        model.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
 
         if freeze_grads:
             for params in model.parameters():
