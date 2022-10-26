@@ -8,6 +8,7 @@ from omegaconf import DictConfig
 from torch import nn
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
 
 from captcha.api.helpers import evaluation
 from captcha.config import net_config, system_config, torch_config
@@ -49,7 +50,8 @@ def train_one_epoch(
             )
     loss = running_loss / iters
     if logger is not None:
-        logger.report_scalar(f"Loss", "train", iteration=epoch, value=loss)
+        logger.report_scalar("Loss", "train", iteration=epoch, value=loss)
+        logger.report_scalar("LR", "train", iteration=epoch, value=optimizer.param_groups[0]["lr"])
 
     return loss
 
@@ -86,6 +88,10 @@ def train_model(cfg: DictConfig):
 
     criterion = nn.MultiLabelSoftMarginLoss()
     optimizer = define_optimizer(cfg.train.optimizer_name, model)
+    if cfg.train.scheduler:
+        scheduler = CosineAnnealingWarmRestarts(optimizer, T_0=1, T_mult=2, eta_min=0.000001)
+    else:
+        scheduler = None
     loss = 0.0
 
     for epoch in range(cfg.train.epochs):
@@ -109,6 +115,9 @@ def train_model(cfg: DictConfig):
                 logger,
                 phase=Phase.test.value,
             )
+        if scheduler:
+            scheduler.step()
+
         if cfg.train.model_save_path:
             model_save_path = system_config.model_dir / cfg.train.model_save_path
             model_save_path.mkdir(exist_ok=True, parents=True)
