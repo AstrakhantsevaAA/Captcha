@@ -1,18 +1,15 @@
 # Captcha recognition
- _____________________________
 
-Last update 13.10.22
-______________________________
+Last update 26.10.22
 
 ## About project
-This project was started to break a captcha on some website for a parser bot. 
+This project was started to break captcha on some website for a parser bot. 
 
 Solved the problem of image recognition for images with 6 numbers.
 
-The example of images:
+The example of image:
 
 ![alt text](docs/427968.jpeg)
-______________________________
 
 ## Data 
 ### From open sources
@@ -37,11 +34,13 @@ Run
 
 `python captcha/data_utils/generate_synthetic_data.py data/raw/synthetic_test 10`
 
----------------------------
 ## Model weights
 
 You can download last release using [this](https://drive.google.com/drive/folders/1WP0bo3NF172F908lmOYTjIz7mxRTIGuw?usp=sharing) Google Drive link
-___________________________
+
+## Model card
+
+Metrics and additional information about release models you can find [here](https://astraalena.notion.site/Captcha-c2c0d379c46b4edc9b748e35ac3f749b).
 
 ## API
 Run uvicorn from **captcha/api** directory
@@ -90,7 +89,6 @@ or
 
 `curl -X POST "http://127.0.0.1:8000/predict"  -F "data=@tests/test_data/000037.png"`
 
-----------------
 # Docker API
 Run locally
 
@@ -106,15 +104,16 @@ Send the request
 
 `curl -X POST "http://127.0.0.1:80/predict"  -F "data=@tests/test_data/000037.png"`
 
-
 ## TODO
 
-- scheduler Cosine Annealing
-- Resnet50 (Resnet-D, Resnest, Resnext)
+- compare with mmocr and paddle-paddle
 - Adam + warmup
 - Mixed Precision
 - dvc for splits
 - profile
 - Perform augs on the GPU (Kornia, DALI)
 - hyperparameter tuning
-- Rabbit
+- Rabbitmq
+- ViT
+- EfficientNet
+- Resnetv2
