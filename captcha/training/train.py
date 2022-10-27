@@ -90,9 +90,12 @@ def train_model(cfg: DictConfig):
 
     criterion = nn.MultiLabelSoftMarginLoss()
     optimizer = define_optimizer(cfg.train.optimizer_name, model)
-    if cfg.train.scheduler:
+    if cfg.scheduler.scheduler:
         scheduler = CosineAnnealingWarmRestarts(
-            optimizer, T_0=1, T_mult=2, eta_min=0.000001
+            optimizer,
+            T_0=cfg.scheduler.t0,
+            T_mult=cfg.scheduler.t_mult,
+            eta_min=0.000001,
         )
     else:
         scheduler = None

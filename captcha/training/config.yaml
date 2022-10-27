@@ -1,10 +1,9 @@
 train:
   log_clearml: True
   epochs: 50
-  task_name: rexnet_2
-  model_save_path: rexnet_2
+  task_name: rexnet_acc_t0_1
+  model_save_path: rexnet_acc_t0_1
   optimizer_name: radam
-  scheduler: True
 dataloader:
   augmentations_intensity: 0.8
   data_dir: /home/alenaastrakhantseva/PycharmProjects/Captcha/data
@@ -18,3 +17,7 @@ net:
   freeze_grads: False
   pretrained: True
   model_name: rexnet-100
+scheduler:
+  scheduler: True
+  t0: 1
+  t_mult: 2
