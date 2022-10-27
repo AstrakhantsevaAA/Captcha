@@ -30,7 +30,7 @@ def health_check():
 
 
 @app.post("/predict")
-async def prediction(data: Union[List[UploadFile], UploadFile] = File()):
+async def prediction(data: List[UploadFile] = File()):
     data = check_data(data)
     external_data = inference(data)
     try:
@@ -41,16 +41,13 @@ async def prediction(data: Union[List[UploadFile], UploadFile] = File()):
     return response
 
 
-def check_data(files: Union[List[UploadFile], UploadFile]):
-    if not isinstance(files, list):
-        files = [files]
+def check_data(files: Union[List[UploadFile]]):
     new_paths = []
     for file in files:
         try:
             contents = file.file.read()
             new_filepath = Path("/tmp/captcha")
             new_filepath.mkdir(parents=True, exist_ok=True)
-            print(new_filepath / file.filename)
             with open(new_filepath / file.filename, "wb") as f:
                 f.write(contents)
             new_paths.append(new_filepath / file.filename)
