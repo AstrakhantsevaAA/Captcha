@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
 
 COPY requirements/torch.txt /requirements/
-RUN pip3 install --no-cache-dir --upgrade pip==22.2.2 setuptools==59.5.0 wheel==0.37.0 \
+RUN pip3 install --no-cache-dir --upgrade pip==22.3 setuptools==59.5.0 wheel==0.37.0 \
     && pip3 install --no-cache-dir -r requirements/torch.txt --extra-index-url https://download.pytorch.org/whl/cu113
 
 COPY requirements/base.txt /requirements/
@@ -34,7 +34,7 @@ COPY requirements/ /requirements/
 RUN pip3 install --no-cache-dir -r requirements/server.txt \
     && pip3 install --no-cache-dir -r requirements/train.txt
 
-COPY models/release_v0.2.0 /models/release_v0.2.0
+COPY models/release_v0.3.0 /models/release_v0.3.0
 
 COPY captcha /captcha
 COPY setup.py /setup.py
