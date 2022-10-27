@@ -76,20 +76,32 @@ def evaluation(
     eval_preds_df = pd.concat(preds_collector, ignore_index=True)
 
     if not inference:
-        accuracy = 0
+        accuracy_per_symbol = 0
         for l in range(net_config.LEN_CAPTCHA):
-            accuracy += accuracy_score(
+            accuracy_per_symbol += accuracy_score(
                 eval_preds_df.iloc[:, l].values,
                 eval_preds_df.iloc[:, net_config.LEN_CAPTCHA + l].values,
             )
-        print(accuracy / net_config.LEN_CAPTCHA)
+        print("Accuracy per symbol", accuracy_per_symbol / net_config.LEN_CAPTCHA)
+
+        accuracy_per_image = accuracy_score(
+            eval_preds_df.iloc[:, : net_config.LEN_CAPTCHA].values,
+            eval_preds_df.iloc[:, net_config.LEN_CAPTCHA :].values,
+        )
+        print("Accuracy per image", accuracy_per_image)
 
         if logger is not None:
             logger.report_scalar(
-                f"Accuracy",
+                f"Accuracy per symbol",
                 phase,
                 iteration=epoch,
-                value=accuracy / net_config.LEN_CAPTCHA,
+                value=accuracy_per_symbol / net_config.LEN_CAPTCHA,
+            )
+            logger.report_scalar(
+                f"Accuracy per image",
+                phase,
+                iteration=epoch,
+                value=accuracy_per_image,
             )
             logger.report_scalar(
                 f"Loss", phase, iteration=epoch, value=running_loss / iters
