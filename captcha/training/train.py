@@ -85,7 +85,7 @@ def train_model(cfg: DictConfig):
         freeze_grads=cfg.net.freeze_grads,
         outputs=net_config.LEN_TOTAL,
         pretrained=cfg.net.pretrained,
-        weights=cfg.net.continue_weights,
+        weights=cfg.net.resume_weights,
     )
 
     criterion = nn.MultiLabelSoftMarginLoss()

@@ -1,8 +1,8 @@
 train:
   log_clearml: True
   epochs: 50
-  task_name: rexnet_acc_t0_1
-  model_save_path: rexnet_acc_t0_1
+  task_name: convnext
+  model_save_path: convnext
   optimizer_name: radam
 dataloader:
   augmentations_intensity: 0.8
@@ -11,12 +11,12 @@ dataloader:
   eval_path: processed/synthetic/eval_set.csv
   test_path: processed/test_set.csv
   test_size: 0
-  batch_size: 32
+  batch_size: 16
 net:
-  continue_weights: ""
+  resume_weights: ""
   freeze_grads: False
   pretrained: True
-  model_name: rexnet-100
+  model_name: convnext
 scheduler:
   scheduler: True
   t0: 1

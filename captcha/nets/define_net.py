@@ -1,4 +1,3 @@
-import copy
 from typing import Optional
 
 import timm
@@ -33,24 +32,17 @@ def define_net(
     elif model_name == "rexnet-100":
         model = timm.create_model("rexnet_100", pretrained=pretrained)
     elif model_name == "convnext":
-        model = timm.create_model("convnext_base")
-        checkpoint = torch.hub.load_state_dict_from_url(
-            "https://dl.fbaipublicfiles.com/convnext/convnext_base_22k_1k_224.pth",
-            check_hash=True,
-        )
-        model_weights = copy.deepcopy(checkpoint["model"])
-        model.load_state_dict(model_weights)
-
+        model = timm.create_model("convnext_base_in22ft1k", pretrained=pretrained)
     else:
         raise Exception(
-            f"Unsupported model_name, expected resnet18, resnet50, resnest-50, rexnet-100, got {model_name}"
+            f"Unsupported model_name, expected resnet18, resnet50, resnest-50, rexnet-100, convnext got {model_name}"
         )
 
     if freeze_grads:
         for params in model.parameters():
             params.requires_grad_ = False
 
-    if model_name == "rexnet-100":
+    if model.__getattr__("head"):
         model.head.fc = nn.Linear(
             in_features=model.head.fc.in_features, out_features=outputs, bias=True
         )
