@@ -15,15 +15,14 @@ from captcha.training.train_utils import create_dataloader
 
 
 def evaluation(
-    model,
-    eval_dataloader: DataLoader,
-    criterion: Optional = None,
-    epoch: int = -1,
-    logger: Optional[Logger] = None,
-    inference: bool = False,
-    phase: Any = "val",
+        model,
+        eval_dataloader: DataLoader,
+        criterion: Optional = None,
+        epoch: int = -1,
+        logger: Optional[Logger] = None,
+        inference: bool = False,
+        phase: Any = "val",
 ) -> pd.DataFrame:
-
     preds_collector = []
     model.eval()
     running_loss = 0.0
@@ -82,17 +81,19 @@ def evaluation(
                 eval_preds_df.iloc[:, l].values,
                 eval_preds_df.iloc[:, net_config.LEN_CAPTCHA + l].values,
             )
-        print("Accuracy per symbol", accuracy_per_symbol / net_config.LEN_CAPTCHA)
-
-        accuracy_per_image = accuracy_score(
-            eval_preds_df.iloc[:, : net_config.LEN_CAPTCHA].values,
-            eval_preds_df.iloc[:, net_config.LEN_CAPTCHA :].values,
+        print("Mean Accuracy per symbol", accuracy_per_symbol / net_config.LEN_CAPTCHA)
+        eval_preds_df["equal"] = eval_preds_df.iloc[:, :].apply(
+            lambda x: all([
+                x[k] == x[net_config.LEN_CAPTCHA + k] for k in
+                range(net_config.LEN_CAPTCHA)
+            ]), axis=1
         )
+        accuracy_per_image = sum(eval_preds_df["equal"].values) / len(eval_preds_df)
         print("Accuracy per image", accuracy_per_image)
 
         if logger is not None:
             logger.report_scalar(
-                f"Accuracy per symbol",
+                f"Mean Accuracy per symbol",
                 phase,
                 iteration=epoch,
                 value=accuracy_per_symbol / net_config.LEN_CAPTCHA,
@@ -120,7 +121,7 @@ def inference(data: list):
     preds = evaluation(model, loader, inference=True)
 
     predictions = preds.iloc[:, : net_config.LEN_CAPTCHA].values.tolist()
-    labels = preds.iloc[:, net_config.LEN_CAPTCHA :].values.tolist()
+    labels = preds.iloc[:, net_config.LEN_CAPTCHA:].values.tolist()
     decode_prediction = [
         [net_config.symbols[int(idx)] for idx in p] for p in predictions
     ]
